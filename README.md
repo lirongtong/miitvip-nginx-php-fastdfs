@@ -1,6 +1,6 @@
-# Docker 镜像 - 麦可易特网
+# Docker 镜像
 
-> 该镜像已经上传至 Docker Hub 了。原本想用 Docker 单独装 FastDFS，Nginx，PHP 等来搭建一套文件管理服务的，但相互之间的关联比较多，干脆就直接自己弄个镜像，一劳永逸。
+> 该镜像已经上传至 Docker Hub。原本想用 Docker 单独装 FastDFS，Nginx，PHP 等来搭建一套文件管理服务的，但相互之间的关联比较多，干脆就直接自己弄个镜像，一劳永逸。
 
 ### 1. 拉取镜像
 
