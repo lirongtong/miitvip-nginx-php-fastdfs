@@ -1,8 +1,8 @@
-FROM alpine:3.10
+FROM alpine:3.17.0
 
-LABEL maintainer="NGINX FastDFS PHP Docker Maintainers <lirongtong@hotmail.com>"
+LABEL maintainer="Nginx FastDFS PHP Docker Maintainers <lirongtong@hotmail.com>"
 
-ENV NGINX_VERSION=1.17.6 \
+ENV NGINX_VERSION=1.22.1 \
     NGINX_HTTP_PORT=80 \
     NGINX_HTTPS_PORT=443
 
@@ -21,21 +21,22 @@ ENV PHPIZE_DEPS \
     pkgconf \
     re2c
 
-ENV PHP_VERSION 7.4.1
+ENV PHP_VERSION 8.2.0
 
-ENV REDIS_VERSION 5.1.1
+ENV REDIS_VERSION 7.0.7
 
 ENV PHP_PORT=9000 \
-    PHP_AMQP_VERSION=1.9.4 \
+    PHP_AMQP_VERSION=1.11.0 \
     PHP_INI_DIR=/usr/local/etc/php \
     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64" \
     PHP_CPPFLAGS="$PHP_CFLAGS" \
     PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie" \
-    PHP_URL="https://www.php.net/get/php-${PHP_VERSION}.tar.xz/from/this/mirror" PHP_ASC_URL="https://www.php.net/get/php-${PHP_VERSION}.tar.xz.asc/from/this/mirror" \
+    PHP_URL="https://www.php.net/distributions/php-${PHP_VERSION}.tar.xz" \
+    PHP_ASC_URL="https://www.php.net/distributions/php-${PHP_VERSION}.tar.xz.asc" \
     PHP_MD5="" \
-    PHP_SHA256="561bb866bdd509094be00f4ece7c3543ec971c4d878645ee81437e291cffc762"
+    PHP_SHA256="6ea4c2dfb532950fd712aa2a08c1412a6a81cd1334dd0b0bf88a8e44c2b3a943"
 
-ENV GPG_KEYS 42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312
+ENV GPG_KEYS E60913E4DF209907D8E30D96659A97C9CF2A795A 39B641343D8C104B2B146DC3F9C39DC0B9698544 1198C0117593497A5EC5C199286AF1F9897469DC 
 ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --disable-cgi
 
 COPY conf/client.conf /etc/fdfs/
@@ -53,23 +54,22 @@ RUN set -eux; \
     \
     addgroup -g 101 -S nginx; \
     adduser -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx; \
-    addgroup -g 82 -S www-data; \
-    adduser -u 82 -D -S -G www-data www-data; \
+    adduser -u 82 -D -S www-data -G www-data; \
     \
     # ---------------------------
     # --- *** --- php --- *** ---
     # ---------------------------
     \
     apk add --no-cache \
-	ca-certificates \
-	curl \
-	tar \
-	xz \
-	bash \
-	pcre-dev \
-	zlib-dev \
-	git \
-	openssl; \
+    ca-certificates \
+    curl \
+    tar \
+    xz \
+    bash \
+    pcre-dev \
+    zlib-dev \
+    git \
+    openssl; \
     \
     mkdir -p "$PHP_INI_DIR/conf.d"; \
     [ ! -d /var/www/html ]; \
@@ -89,78 +89,78 @@ RUN set -eux; \
     curl -fsSL -o php.tar.xz "$PHP_URL"; \
     \
     if [ -n "$PHP_SHA256" ]; then \
-	echo "$PHP_SHA256 *php.tar.xz" | sha256sum -c -; \
+    echo "$PHP_SHA256 *php.tar.xz" | sha256sum -c -; \
     fi; \
     if [ -n "$PHP_MD5" ]; then \
-	echo "$PHP_MD5 *php.tar.xz" | md5sum -c -; \
+    echo "$PHP_MD5 *php.tar.xz" | md5sum -c -; \
     fi; \
     \
     if [ -n "$PHP_ASC_URL" ]; then \
-	curl -fsSL -o php.tar.xz.asc "$PHP_ASC_URL"; \
-	export GNUPGHOME="$(mktemp -d)"; \
-	for key in $GPG_KEYS; do \
-	    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-	done; \
-	gpg --batch --verify php.tar.xz.asc php.tar.xz; \
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME"; \
+    curl -fsSL -o php.tar.xz.asc "$PHP_ASC_URL"; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    for key in $GPG_KEYS; do \
+    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+    done; \
+    gpg --batch --verify php.tar.xz.asc php.tar.xz; \
+    gpgconf --kill all; \
+    rm -rf "$GNUPGHOME"; \
     fi; \
     \
     apk del --no-network .fetch-deps; \
     \
     apk add --no-cache --virtual .build-deps \
-	$PHPIZE_DEPS \
-	argon2-dev \
-	coreutils \
-	curl-dev \
-	libedit-dev \
-	libsodium-dev \
-	libxml2-dev \
-	openssl-dev \
-	sqlite-dev \
-	linux-headers \
-	oniguruma-dev \
-	libxslt-dev \
-	gd-dev \
-	cmake \
-	geoip-dev \
-	perl-dev \
-	libedit-dev \
-	mercurial \
-	alpine-sdk \
-	findutils; \
+    $PHPIZE_DEPS \
+    argon2-dev \
+    coreutils \
+    curl-dev \
+    libedit-dev \
+    libsodium-dev \
+    libxml2-dev \
+    openssl-dev \
+    sqlite-dev \
+    linux-headers \
+    oniguruma-dev \
+    libxslt-dev \
+    gd-dev \
+    cmake \
+    geoip-dev \
+    perl-dev \
+    libedit-dev \
+    mercurial \
+    alpine-sdk \
+    findutils; \
     \
     export CFLAGS="$PHP_CFLAGS" \
-	CPPFLAGS="$PHP_CPPFLAGS" \
-	LDFLAGS="$PHP_LDFLAGS"; \
+    CPPFLAGS="$PHP_CPPFLAGS" \
+    LDFLAGS="$PHP_LDFLAGS"; \
     \
     docker-php-source extract; \
     cd /usr/src/php; \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
-	--build="$gnuArch" \
-	--with-config-file-path="$PHP_INI_DIR" \
-	--with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
-	--enable-option-checking=fatal \
-	--with-mhash \
-	--enable-sockets \
-	--enable-ftp \
-	--enable-mbstring \
-	--enable-mysqlnd \
-	--enable-bcmath \
-	--with-mysqli \
-	--with-pdo-mysql \
-	--with-password-argon2 \
-	--with-sodium=shared \
-	--with-pdo-sqlite=/usr \
-	--with-sqlite3=/usr \
-	--with-curl \
-	--with-libedit \
-	--with-openssl \
-	--with-zlib \
-	--with-pear \
-	$(test "$gnuArch" = 's390x-linux-musl' && echo '--without-pcre-jit') \
-	${PHP_EXTRA_CONFIGURE_ARGS:-}; \
+    --build="$gnuArch" \
+    --with-config-file-path="$PHP_INI_DIR" \
+    --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
+    --enable-option-checking=fatal \
+    --with-mhash \
+    --enable-sockets \
+    --enable-ftp \
+    --enable-mbstring \
+    --enable-mysqlnd \
+    --enable-bcmath \
+    --with-mysqli \
+    --with-pdo-mysql \
+    --with-password-argon2 \
+    --with-sodium=shared \
+    --with-pdo-sqlite=/usr \
+    --with-sqlite3=/usr \
+    --with-curl \
+    --with-libedit \
+    --with-openssl \
+    --with-zlib \
+    --with-pear \
+    $(test "$gnuArch" = 's390x-linux-musl' && echo '--without-pcre-jit') \
+    ${PHP_EXTRA_CONFIGURE_ARGS:-}; \
     \
     make -j "$(nproc)"; \
     find -type f -name '*.a' -delete; \
@@ -175,10 +175,10 @@ RUN set -eux; \
     docker-php-source delete; \
     \
     runDeps="$( \
-	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
-	    | tr ',' '\n' \
-	    | sort -u \
-	    | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+    scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+    | tr ',' '\n' \
+    | sort -u \
+    | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )"; \
     apk add --no-cache $runDeps; \
     \
@@ -190,37 +190,37 @@ RUN set -eux; \
     \
     cd /usr/local/etc; \
     if [ -d php-fpm.d ]; then \
-	sed 's!=NONE/!=!g' php-fpm.conf.default | tee php-fpm.conf > /dev/null; \
-	cp php-fpm.d/www.conf.default php-fpm.d/www.conf; \
+    sed 's!=NONE/!=!g' php-fpm.conf.default | tee php-fpm.conf > /dev/null; \
+    cp php-fpm.d/www.conf.default php-fpm.d/www.conf; \
     else \
-	mkdir php-fpm.d; \
-	cp php-fpm.conf.default php-fpm.d/www.conf; \
-	{ \
-	    echo '[global]'; \
-	    echo 'include=etc/php-fpm.d/*.conf'; \
-	} | tee php-fpm.conf; \
+    mkdir php-fpm.d; \
+    cp php-fpm.conf.default php-fpm.d/www.conf; \
+    { \
+    echo '[global]'; \
+    echo 'include=etc/php-fpm.d/*.conf'; \
+    } | tee php-fpm.conf; \
     fi; \
     { \
-	echo '[global]'; \
-	echo 'error_log = /proc/self/fd/2'; \
-	echo; echo '; https://github.com/docker-library/php/pull/725#issuecomment-443540114'; echo 'log_limit = 8192'; \
-	echo; \
-	echo '[www]'; \
-	echo '; if we send this to /proc/self/fd/1, it never appears'; \
-	echo 'access.log = /proc/self/fd/2'; \
-	echo; \
-	echo 'clear_env = no'; \
-	echo; \
-	echo '; Ensure worker stdout and stderr are sent to the main error log.'; \
-	echo 'catch_workers_output = yes'; \
-	echo 'decorate_workers_output = no'; \
+    echo '[global]'; \
+    echo 'error_log = /proc/self/fd/2'; \
+    echo; echo '; https://github.com/docker-library/php/pull/725#issuecomment-443540114'; echo 'log_limit = 8192'; \
+    echo; \
+    echo '[www]'; \
+    echo '; if we send this to /proc/self/fd/1, it never appears'; \
+    echo 'access.log = /proc/self/fd/2'; \
+    echo; \
+    echo 'clear_env = no'; \
+    echo; \
+    echo '; Ensure worker stdout and stderr are sent to the main error log.'; \
+    echo 'catch_workers_output = yes'; \
+    echo 'decorate_workers_output = no'; \
     } | tee php-fpm.d/docker.conf; \
     { \
-	echo '[global]'; \
-	echo 'daemonize = no'; \
-	echo; \
-	echo '[www]'; \
-	echo 'listen = 9000'; \
+    echo '[global]'; \
+    echo 'daemonize = no'; \
+    echo; \
+    echo '[www]'; \
+    echo 'listen = 9000'; \
     } | tee php-fpm.d/zz-docker.conf; \
     \
     # --------------------------------
@@ -320,48 +320,48 @@ RUN set -eux; \
     mkdir -p /var/cache/nginx; \
     cd ./nginx-${NGINX_VERSION}; \
     ./configure \
-	--prefix=/etc/nginx \
-	--sbin-path=/usr/sbin/nginx \
-	--modules-path=/usr/lib/nginx/modules \
-	--conf-path=/etc/nginx/nginx.conf \
-	--error-log-path=/var/log/nginx/error.log \
-	--http-log-path=/var/log/nginx/access.log \
-	--pid-path=/var/run/nginx.pid \
-	--lock-path=/var/run/nginx.lock \
-	--http-client-body-temp-path=/var/cache/nginx/client_temp \
-	--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-	--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-	--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
-	--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
-	--user=nginx \
-	--group=nginx \
-	--with-compat \
-	--with-file-aio \
-	--with-threads \
-	--with-http_addition_module \
-	--with-http_auth_request_module \
-	--with-http_dav_module \
-	--with-http_flv_module \
-	--with-http_gunzip_module \
-	--with-http_gzip_static_module \
-	--with-http_mp4_module \
-	--with-http_random_index_module \
-	--with-http_realip_module \
-	--with-http_secure_link_module \
-	--with-http_slice_module \
-	--with-http_ssl_module \
-	--with-http_stub_status_module \
-	--with-http_sub_module \
-	--with-http_v2_module \
-	--with-mail \
-	--with-mail_ssl_module \
-	--with-stream \
-	--with-stream_realip_module \
-	--with-stream_ssl_module \
-	--with-stream_ssl_preread_module \
-	--with-cc-opt='-g -O2 -fdebug-prefix-map=/data/builder/debuild/nginx-${NGINX_VERSION}/debian/debuild-base/nginx-${NGINX_VERSION}=. -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
-	--with-ld-opt='-Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
-	--add-module=/usr/src/build-deps/fastdfs-nginx-module-master/src; \
+    --prefix=/etc/nginx \
+    --sbin-path=/usr/sbin/nginx \
+    --modules-path=/usr/lib/nginx/modules \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --pid-path=/var/run/nginx.pid \
+    --lock-path=/var/run/nginx.lock \
+    --http-client-body-temp-path=/var/cache/nginx/client_temp \
+    --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+    --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+    --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
+    --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+    --user=nginx \
+    --group=nginx \
+    --with-compat \
+    --with-file-aio \
+    --with-threads \
+    --with-http_addition_module \
+    --with-http_auth_request_module \
+    --with-http_dav_module \
+    --with-http_flv_module \
+    --with-http_gunzip_module \
+    --with-http_gzip_static_module \
+    --with-http_mp4_module \
+    --with-http_random_index_module \
+    --with-http_realip_module \
+    --with-http_secure_link_module \
+    --with-http_slice_module \
+    --with-http_ssl_module \
+    --with-http_stub_status_module \
+    --with-http_sub_module \
+    --with-http_v2_module \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-stream \
+    --with-stream_realip_module \
+    --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-cc-opt='-g -O2 -fdebug-prefix-map=/data/builder/debuild/nginx-${NGINX_VERSION}/debian/debuild-base/nginx-${NGINX_VERSION}=. -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
+    --with-ld-opt='-Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
+    --add-module=/usr/src/build-deps/fastdfs-nginx-module-master/src; \
     make; \
     make install; \
     nginx -V; \
