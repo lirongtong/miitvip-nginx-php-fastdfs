@@ -23,7 +23,7 @@ ENV PHPIZE_DEPS \
 
 ENV PHP_VERSION 8.2.0
 
-ENV REDIS_VERSION 7.0.7
+ENV REDIS_VERSION 5.3.7
 
 ENV PHP_PORT=9000 \
     PHP_AMQP_VERSION=1.11.0 \
@@ -228,7 +228,7 @@ RUN set -eux; \
     # --------------------------------
     wget https://github.com/kornelski/pngquant/archive/master.tar.gz -O pngquant.tar.gz; \
     tar zxf pngquant.tar.gz; \
-    cd ./pngquant-master; \
+    cd ./pngquant-main; \
     make && make install; \
     \
     # -------------------------------------
