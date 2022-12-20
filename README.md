@@ -2,7 +2,9 @@
 
 > 集成 FastDFS, Nginx, PHP 等多种软件的 Docker 镜像, 免除 FastDFS 构建文件管理服务过程中一系列的关联服务的繁琐操作，该镜像已经上传至 Docker Hub.
 > >
-> FastDFS: 一个开源的轻量级分布式文件系统, 解决大容量存储和负载均衡问题 [(https://github.com/happyfish100/fastdfs](https://github.com/happyfish100/fastdfs) ) .
+> FastDFS: 一个开源的轻量级分布式文件系统, 解决大容量存储和负载均衡问题 ( [https://github.com/happyfish100/fastdfs](https://github.com/happyfish100/fastdfs) ) .
+> >
+> 镜像构建: `docker build -t miitvip/nginx-php-fastdfs .`
 
 ## 0. 更新说明
 
