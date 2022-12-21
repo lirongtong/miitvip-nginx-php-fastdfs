@@ -8,7 +8,8 @@ ENV NGINX_VERSION=1.22.1 \
 
 ENV FASTDFS_STORAGE_HTTP_PORT=8888 \
     FASTDFS_STORAGE_PORT=23000 \
-    FASTDFS_TRACKER_PORT=22122
+    FASTDFS_TRACKER_PORT=22122 \
+    FASTDFS_VERSION=6.09
 
 ENV PHPIZE_DEPS \
     autoconf \
@@ -229,7 +230,7 @@ RUN set -eux; \
     wget https://github.com/kornelski/pngquant/archive/master.tar.gz -O pngquant.tar.gz; \
     tar zxf pngquant.tar.gz; \
     cd ./pngquant-main; \
-    make && make install; \
+    ./configure && make && make install; \
     \
     # -------------------------------------
     # --- *** --- libfastcommon --- *** ---
@@ -241,13 +242,24 @@ RUN set -eux; \
     ./make.sh; \
     ./make.sh install; \
     \
+    # --------------------------------------
+    # --- *** --- libserverframe --- *** ---
+    # --------------------------------------
+    cd /usr/src/build-deps; \
+    wget https://github.com/happyfish100/libserverframe/archive/master.tar.gz -O libserverframe.tar.gz; \
+    tar zxf libserverframe.tar.gz; \
+    cd ./libserverframe-master; \
+    ./make.sh; \
+    ./make.sh install; \
+    \
     # -------------------------------
     # --- *** --- fastdfs --- *** ---
     # -------------------------------
     cd /usr/src/build-deps; \
-    wget https://github.com/happyfish100/fastdfs/archive/master.tar.gz -O fastdfs.tar.gz; \
-    tar zxf fastdfs.tar.gz; \
-    cd ./fastdfs-master; \
+    wget https://github.com/happyfish100/fastdfs/archive/refs/tags/V${FASTDFS_VERSION}.tar.gz -O fastdfs-${FASTDFS_VERSION}.tar.gz; \
+    chmod u+x fastdfs-${FASTDFS_VERSION}.tar.gz; \
+    tar zxf fastdfs-${FASTDFS_VERSION}.tar.gz; \
+    cd ./fastdfs-${FASTDFS_VERSION}; \
     ./make.sh; \
     ./make.sh install; \
     \
