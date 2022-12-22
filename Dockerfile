@@ -317,6 +317,7 @@ RUN set -eux; \
     cd /usr/src/build-deps; \
     curl -sS https://getcomposer.org/installer | php; \
     mv composer.phar /usr/local/bin/composer; \
+    export COMPOSER_ALLOW_SUPERUSER=1; \
     composer -v; \
     composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/; \
     \
