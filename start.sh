@@ -45,23 +45,23 @@ fastdfs )
     echo -e "-----------------------------"
     echo -e "--- *** START TRACKER *** ---"
     echo -e "-----------------------------"
-    /etc/init.d/fdfs_trackerd start
+    /usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start
     echo -e "-----------------------------"
     echo -e "--- *** START STORAGE *** ---"
     echo -e "-----------------------------"
-    /etc/init.d/fdfs_storaged start
+    /usr/bin/fdfs_storaged /etc/fdfs/storage.conf start
     ;;
 tracker )
     echo -e "-----------------------------"
     echo -e "--- *** START TRACKER *** ---"
     echo -e "-----------------------------"
-    /etc/init.d/fdfs_trackerd start
+    /usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start
     ;;
 storage )
     echo -e "-----------------------------"
     echo -e "--- *** START STORAGE *** ---"
     echo -e "-----------------------------"
-    /etc/init.d/fdfs_storaged start
+    /usr/bin/fdfs_storaged /etc/fdfs/storage.conf start
     ;;
 * )
     echo -e "---------------------------"
@@ -77,12 +77,12 @@ storage )
     echo -e "-----------------------------"
     echo -e "--- *** START TRACKER *** ---"
     echo -e "-----------------------------\n"
-    /etc/init.d/fdfs_trackerd start
+    /usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start
 
     echo -e "-----------------------------"
     echo -e "--- *** START STORAGE *** ---"
     echo -e "-----------------------------\n"
-    /etc/init.d/fdfs_storaged start
+    /usr/bin/fdfs_storaged /etc/fdfs/storage.conf start
 esac
 
 tail -f  /dev/null
