@@ -22,9 +22,10 @@ if [[ $GROUP_NAME ]]; then
     echo -e "-----------------------------------------------------------"
 
     new_group_name=$GROUP_NAME
-    old_group_name="MIIT"
+    old_group_name="MIITVIP"
 
     echo "$(sed "s/$old_group_name/$new_group_name/g" /etc/fdfs/storage.conf)" > /etc/fdfs/storage.conf
+    echo "$(sed "s/$old_group_name/$new_group_name/g" /etc/fdfs/mod_fastdfs.conf)" > /etc/fdfs/mod_fastdfs.conf
 
 fi
 

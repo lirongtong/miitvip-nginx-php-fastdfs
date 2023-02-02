@@ -1,4 +1,4 @@
-FROM alpine:3.17.0
+FROM alpine:3.10
 
 LABEL maintainer="Nginx FastDFS PHP Docker Maintainers <lirongtong@hotmail.com>"
 
@@ -9,7 +9,7 @@ ENV NGINX_VERSION=1.22.1 \
 ENV FASTDFS_STORAGE_HTTP_PORT=8888 \
     FASTDFS_STORAGE_PORT=23000 \
     FASTDFS_TRACKER_PORT=22122 \
-    FASTDFS_VERSION=6.09
+    FASTDFS_VERSION=6.9.3
 
 ENV PHPIZE_DEPS \
     autoconf \
@@ -55,6 +55,7 @@ RUN set -eux; \
     \
     addgroup -g 101 -S nginx; \
     adduser -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx; \
+    addgroup -g 82 -S www-data; \
     adduser -u 82 -D -S www-data -G www-data; \
     \
     # ---------------------------
