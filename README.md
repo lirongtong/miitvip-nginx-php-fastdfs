@@ -225,3 +225,22 @@ current trunk file id = 0
   last_sync_update = 1970-01-01 00:00:00
   last_synced_timestamp = 1970-01-01 00:00:00
 ```
+
+## 11. 问题
+
+> 若 FastDFS 启动失败，请进入 fastdfs 容器，手动启动 tracker & storage 后再试
+
+```shell
+docker exec -it fastdfs /bin/bash
+/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start
+/usr/bin/fdfs_storaged /etc/fdfs/storage.conf start
+
+# 再次查看是否正常
+/usr/bin/fdfs_monitor /etc/fdfs/storage.conf
+```
+
+> 重启 nginx
+
+```shell
+docker restart nginx
+```
